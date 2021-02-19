@@ -9,6 +9,7 @@ buildscript {
         classpath Dependencies.gradle_classpath
         classpath Dependencies.kotlin_gradle_plugin_classpath
         classpath Dependencies.safe_args_classpath
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

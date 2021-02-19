@@ -20,17 +20,15 @@ class NearbyApplication : MultiDexApplication() {
             if (BuildConfig.DEBUG) androidLogger(Level.ERROR) else EmptyLogger()
             androidContext(this@NearbyApplication)
             modules(
-                listOf(
-                    networkModules,
-                    othersModules,
-                    schedulersModule,
-                    viewmodelModules,
-                    imageLoadingModules,
-                    serializationModule,
-                    otherServices,
-                    repoModule,
-                    networkServiceModule
-                )
+                networkModules,
+                othersModules,
+                schedulersModule,
+                viewmodelModules,
+                imageLoadingModules,
+                serializationModule,
+                otherServices,
+                repoModule,
+                networkServiceModule
             )
         }
     }
