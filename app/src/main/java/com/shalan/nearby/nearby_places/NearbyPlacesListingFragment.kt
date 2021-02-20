@@ -1,10 +1,12 @@
 package com.shalan.nearby.nearby_places
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender.SendIntentException
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -17,9 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.*
 import com.shalan.nearby.MainNavXmlDirections
 import com.shalan.nearby.R
 import com.shalan.nearby.base.fragment.BaseSingleListFragment
@@ -37,6 +37,17 @@ class NearbyPlacesListingFragment :
 
     private lateinit var locationPermissionRequestLauncher: ActivityResultLauncher<String>
     private lateinit var locationRequest: LocationRequest
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val locationUpdatesCallback by lazy {
+        object : LocationCallback() {
+            override fun onLocationResult(p0: LocationResult) {
+                Log.d(
+                    TAG,
+                    "onLocationResult: ${p0.lastLocation.latitude}, ${p0.lastLocation.longitude}"
+                )
+            }
+        }
+    }
 
     private val nearbyPlacesAdapter by lazy {
         NearbyPlacesAdapter()
@@ -52,7 +63,7 @@ class NearbyPlacesListingFragment :
     }
 
     override fun showError(error: String?) {
-        TODO("Not yet implemented")
+
     }
 
     override fun hideLoading() {
@@ -68,7 +79,18 @@ class NearbyPlacesListingFragment :
 
     override fun getAdapter(): NearbyPlacesAdapter = nearbyPlacesAdapter
 
+    override fun onResume() {
+        super.onResume()
+        checkLocationPermission()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        fusedLocationClient.removeLocationUpdates(locationUpdatesCallback)
+    }
+
     override fun onCreateInit(savedInstanceState: Bundle?) {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         observeData()
         getRecyclerView().adapter = getAdapter()
         getRecyclerView().addItemDecoration(
@@ -85,8 +107,6 @@ class NearbyPlacesListingFragment :
                     showLocationDeniedMessage()
                 }
             }
-
-        checkLocationPermission()
     }
 
     private fun showLocationDeniedMessage() {
@@ -182,8 +202,13 @@ class NearbyPlacesListingFragment :
             }
     }
 
+    @SuppressLint("MissingPermission")
     private fun getUserLocation() {
-        Log.d(TAG, "getUserLocation: ")
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationUpdatesCallback,
+            Looper.getMainLooper()
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
