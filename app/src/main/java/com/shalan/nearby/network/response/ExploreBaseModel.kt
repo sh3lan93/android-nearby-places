@@ -17,10 +17,13 @@ data class ExploreResponse(val groups: List<ResponseGroup>)
 data class ResponseGroup(val type: String, val name: String, val items: List<GroupItem>)
 
 @JsonClass(generateAdapter = true)
-data class GroupItem(val id: String, val name: String, val location: ItemLocation)
+data class GroupItem(val venue: Venue)
 
 @JsonClass(generateAdapter = true)
-data class ItemLocation(val address: String, val city: String, val state: String) {
+data class Venue(val id: String, val name: String, val location: ItemLocation? = null)
+
+@JsonClass(generateAdapter = true)
+data class ItemLocation(val address: String? = null, val city: String, val state: String) {
 
     fun getDisplayedAddress() = "$address, $city, $state"
 

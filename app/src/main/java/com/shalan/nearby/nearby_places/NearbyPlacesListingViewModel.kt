@@ -19,8 +19,13 @@ class NearbyPlacesListingViewModel(private val repo: NearbyPlacesListingRepo) :
 
     }
 
+    fun isFirstTimeToGetLocation() = !::userLocation.isInitialized
+
+    fun getUserLocation(): List<Double> = userLocation.split(",").map { it.toDouble() }
+
     fun setUserLocation(latitude: Double, longitude: Double) {
         userLocation = "$latitude,$longitude"
+        loadData().execute(data)
     }
 
     override fun loadData(): Single<List<GroupItem>> {

@@ -7,20 +7,20 @@ import androidx.recyclerview.widget.DiffUtil
 import com.shalan.nearby.R
 import com.shalan.nearby.base.adapters.BaseAdapter
 import com.shalan.nearby.databinding.RecommendationItemViewBinding
-import com.shalan.nearby.network.response.GroupItem
+import com.shalan.nearby.network.response.Venue
 
 /**
  * Created by Mohamed Shalan on 2/20/21
  */
 
-class NearbyPlacesAdapter : BaseAdapter<GroupItem, NearbyPlacesViewHolder>(diffUtil) {
+class NearbyPlacesAdapter : BaseAdapter<Venue, NearbyPlacesViewHolder>(diffUtil) {
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<GroupItem>() {
-            override fun areItemsTheSame(oldItem: GroupItem, newItem: GroupItem): Boolean =
+        val diffUtil = object : DiffUtil.ItemCallback<Venue>() {
+            override fun areItemsTheSame(oldItem: Venue, newItem: Venue): Boolean =
                 oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: GroupItem, newItem: GroupItem): Boolean =
+            override fun areContentsTheSame(oldItem: Venue, newItem: Venue): Boolean =
                 oldItem == newItem
         }
     }

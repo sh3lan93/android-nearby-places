@@ -11,4 +11,7 @@
     <string name="google_service_not_available">Google service isn\'t available \n we can\'t operate</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="location_not_enabled_message">Your location settings not enabled \n we can\'t operate</string>
+    <string name="io_exception">Something went wrong</string>
+    <string name="socket_exception">Something went wrong</string>
+    <string name="internal_server_exception">Something went wrong</string>
 </resources>

@@ -5,11 +5,13 @@ import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender.SendIntentException
+import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
@@ -27,6 +29,7 @@ import com.shalan.nearby.databinding.FragmentNearbyPlacesListingBinding
 import com.shalan.nearby.network.response.GroupItem
 import com.shalan.nearby.utils.DialogsUtils
 import com.shalan.nearby.utils.LocationManager
+import com.shalan.nearby.utils.LocationUtils
 
 class NearbyPlacesListingFragment :
     BaseSingleListFragment<List<GroupItem>, NearbyPlacesListingViewModel, FragmentNearbyPlacesListingBinding, NearbyPlacesAdapter>(
@@ -41,10 +44,19 @@ class NearbyPlacesListingFragment :
     private val locationUpdatesCallback by lazy {
         object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
-                Log.d(
-                    TAG,
-                    "onLocationResult: ${p0.lastLocation.latitude}, ${p0.lastLocation.longitude}"
-                )
+                if (viewmodel.isFirstTimeToGetLocation() || LocationUtils.shouldFetchRecommendations(
+                        first = Location(USER_LOCATION_PROVIDER).apply {
+                            latitude = viewmodel.getUserLocation().first()
+                            longitude = viewmodel.getUserLocation().last()
+                        },
+                        second = p0.lastLocation
+                    )
+                ) {
+                    viewmodel.setUserLocation(
+                        latitude = p0.lastLocation.latitude,
+                        longitude = p0.lastLocation.longitude
+                    )
+                }
             }
         }
     }
@@ -63,7 +75,7 @@ class NearbyPlacesListingFragment :
     }
 
     override fun showError(error: String?) {
-
+        Toast.makeText(requireContext(), "$error", Toast.LENGTH_SHORT).show()
     }
 
     override fun hideLoading() {
@@ -72,7 +84,10 @@ class NearbyPlacesListingFragment :
     }
 
     override fun showData(data: List<GroupItem>?) {
-        data?.let {
+        Log.d(TAG, "showData: $data")
+        data?.map {
+            it.venue
+        }?.let {
             nearbyPlacesAdapter.submitList(it)
         }
     }
@@ -231,5 +246,6 @@ class NearbyPlacesListingFragment :
         val TAG = NearbyPlacesListingFragment::class.java.simpleName
         val GOOGLE_SERVICE_AVAILABILITY_REQUEST_CODE = 1
         val CHECK_LOCATION_SETTINGS_REQUEST_CODE = 2
+        val USER_LOCATION_PROVIDER = "userlocation"
     }
 }

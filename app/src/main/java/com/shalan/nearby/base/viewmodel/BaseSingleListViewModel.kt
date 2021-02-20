@@ -10,7 +10,7 @@ abstract class BaseSingleListViewModel<T> : BaseViewModel() {
 
     var refreshData: Boolean = false
 
-    private val data: MutableLiveData<IResult<T>> by lazy {
+    protected val data: MutableLiveData<IResult<T>> by lazy {
         MutableLiveData<IResult<T>>()
     }
 

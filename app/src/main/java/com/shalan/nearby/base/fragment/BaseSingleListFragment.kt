@@ -31,7 +31,7 @@ abstract class BaseSingleListFragment<T, ViewModel : BaseSingleListViewModel<T>,
     }
 
     open fun observeData() {
-        viewmodel.data_.observe(viewLifecycleOwner, Observer {
+        viewmodel.data_.observe(viewLifecycleOwner, {
 			when (it.whichStatus()) {
 				CommonStatusImp.LOADING -> {
 					disableSwipeToRefreshDuringLoading()

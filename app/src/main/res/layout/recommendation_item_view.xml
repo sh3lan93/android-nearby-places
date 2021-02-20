@@ -5,6 +5,11 @@
 
     <data>
 
+        <import type="com.shalan.nearby.network.response.Venue" />
+
+        <variable
+            name="venue"
+            type="Venue" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,6 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_10dp"
+            android:text="@{venue.name}"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/black"
             android:textStyle="bold"
@@ -41,6 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5dp"
+            android:text="@{venue.location != null ? venue.location.displayedAddress : ``}"
             app:layout_constraintEnd_toEndOf="@id/tv_place_name"
             app:layout_constraintStart_toStartOf="@id/tv_place_name"
             app:layout_constraintTop_toBottomOf="@id/tv_place_name"
