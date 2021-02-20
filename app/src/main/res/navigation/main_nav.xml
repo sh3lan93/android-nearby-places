@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav.xml"
+    app:startDestination="@id/nearbyPlacesListingFragment">
+
+    <fragment
+        android:id="@+id/nearbyPlacesListingFragment"
+        android:name="com.shalan.nearby.nearby_places.NearbyPlacesListingFragment"
+        android:label="NearbyPlacesListingFragment"
+        tools:layout="@layout/fragment_nearby_places_listing" />
+    <fragment
+        android:id="@+id/informaticFragment"
+        android:name="com.shalan.nearby.informatic.InformaticFragment"
+        android:label="InformaticFragment"
+        tools:layout="@layout/fragment_informatic" >
+        <argument
+            android:name="message"
+            app:argType="string" />
+    </fragment>
+    <action android:id="@+id/action_global_informaticFragment" app:destination="@id/informaticFragment" />
+</navigation>

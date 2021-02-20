@@ -4,6 +4,10 @@
 
 object Versions {
 
+    val fragmentx = "1.3.0"
+
+    val activityx = "1.2.0"
+
     val swipeRefreshLayout = "1.1.0"
 
     val multidex = "2.0.1"

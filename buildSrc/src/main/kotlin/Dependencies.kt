@@ -93,4 +93,8 @@ object Dependencies {
     val multidex = "androidx.multidex:multidex:${Versions.multidex}"
 
     val swipeRefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swipeRefreshLayout}"
+
+    val activityx = "androidx.activity:activity-ktx:${Versions.activityx}"
+
+    val fragmentx = "androidx.fragment:fragment-ktx:${Versions.fragmentx}"
 }
