@@ -129,4 +129,7 @@ dependencies {
 
     //fragmentx
     implementation Dependencies.fragmentx
+
+    //play service location
+    implementation Dependencies.playServiceLocation
 }

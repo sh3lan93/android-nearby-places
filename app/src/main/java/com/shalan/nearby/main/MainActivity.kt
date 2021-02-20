@@ -1,5 +1,6 @@
 package com.shalan.nearby.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -47,5 +48,12 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(MainViewMo
             viewmodel.updateLocationType(LocationUpdateType.REALTIME.type)
         }
         invalidateOptionsMenu()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        for (fragment in supportFragmentManager.findFragmentById(R.id.nav_host_fragment)?.childFragmentManager?.fragments
+            ?: emptyList())
+            fragment.onActivityResult(requestCode, resultCode, data)
     }
 }

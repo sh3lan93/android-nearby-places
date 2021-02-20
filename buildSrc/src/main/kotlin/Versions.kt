@@ -4,6 +4,8 @@
 
 object Versions {
 
+    val playServiceLocation = "18.0.0"
+
     val fragmentx = "1.3.0"
 
     val activityx = "1.2.0"

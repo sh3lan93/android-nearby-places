@@ -97,4 +97,6 @@ object Dependencies {
     val activityx = "androidx.activity:activity-ktx:${Versions.activityx}"
 
     val fragmentx = "androidx.fragment:fragment-ktx:${Versions.fragmentx}"
+
+    val playServiceLocation = "com.google.android.gms:play-services-location:${Versions.playServiceLocation}"
 }

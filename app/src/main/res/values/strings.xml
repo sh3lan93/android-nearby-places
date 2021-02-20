@@ -8,4 +8,7 @@
     <string name="ok">Give permission</string>
     <string name="deny_permission">Deny permission</string>
     <string name="location_permission_reason">We need to access your location to fetch our recommendations</string>
+    <string name="google_service_not_available">Google service isn\'t available \n we can\'t operate</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="location_not_enabled_message">Your location settings not enabled \n we can\'t operate</string>
 </resources>

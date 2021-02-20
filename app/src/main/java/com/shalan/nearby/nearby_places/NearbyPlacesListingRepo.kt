@@ -1,6 +1,8 @@
 package com.shalan.nearby.nearby_places
 
 import com.shalan.nearby.base.repo.IRepo
+import com.shalan.nearby.common.SharedPrefConstants
+import com.shalan.nearby.enums.LocationUpdateType
 import com.shalan.nearby.network.services.NearbyService
 
 /**
@@ -13,4 +15,11 @@ class NearbyPlacesListingRepo(private val service: NearbyService) : IRepo {
         service.getNearbyPlaces(userLocation = userLocation).map {
             it.response.groups.first().items
         }
+
+
+    fun whichLocationType() = if (getSharedPreferences().get(
+            SharedPrefConstants.LOCATION_UPDATE_TYPE_KEY,
+            LocationUpdateType.REALTIME.type
+        ) == LocationUpdateType.REALTIME.type
+    ) LocationUpdateType.REALTIME else LocationUpdateType.SINGLE
 }

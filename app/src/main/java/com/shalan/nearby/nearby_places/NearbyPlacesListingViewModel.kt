@@ -1,6 +1,7 @@
 package com.shalan.nearby.nearby_places
 
 import com.shalan.nearby.base.states.BaseSingleListViewModel
+import com.shalan.nearby.enums.LocationUpdateType
 import com.shalan.nearby.network.response.GroupItem
 import io.reactivex.rxjava3.core.Single
 
@@ -28,4 +29,6 @@ class NearbyPlacesListingViewModel(private val repo: NearbyPlacesListingRepo) :
 
         return repo.fetchRecommendation(userLocation = userLocation)
     }
+
+    fun isRealtimeUpdates() = repo.whichLocationType() == LocationUpdateType.REALTIME
 }
