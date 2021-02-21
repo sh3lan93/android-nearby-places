@@ -13,7 +13,9 @@ class NearbyPlacesListingRepo(private val service: NearbyService) : IRepo {
 
     fun fetchRecommendation(userLocation: String) =
         service.getNearbyPlaces(userLocation = userLocation).map {
-            it.response.groups.first().items
+            it.response.groups.first().items.map {
+                it.venue
+            }
         }
 
 

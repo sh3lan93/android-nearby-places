@@ -25,13 +25,13 @@ import com.shalan.nearby.MainNavXmlDirections
 import com.shalan.nearby.R
 import com.shalan.nearby.base.fragment.BaseSingleListFragment
 import com.shalan.nearby.databinding.FragmentNearbyPlacesListingBinding
-import com.shalan.nearby.network.response.GroupItem
+import com.shalan.nearby.network.response.Venue
 import com.shalan.nearby.utils.DialogsUtils
 import com.shalan.nearby.utils.LocationManager
 import com.shalan.nearby.utils.LocationUtils
 
 class NearbyPlacesListingFragment :
-    BaseSingleListFragment<List<GroupItem>, NearbyPlacesListingViewModel, FragmentNearbyPlacesListingBinding, NearbyPlacesAdapter>(
+    BaseSingleListFragment<List<Venue>, NearbyPlacesListingViewModel, FragmentNearbyPlacesListingBinding, NearbyPlacesAdapter>(
         layout = R.layout.fragment_nearby_places_listing,
         clazz = NearbyPlacesListingViewModel::class
     ) {
@@ -70,12 +70,10 @@ class NearbyPlacesListingFragment :
         binding.rvRecommendation.visibility = VISIBLE
     }
 
-    override fun showData(data: List<GroupItem>?) {
+    override fun showData(data: List<Venue>?) {
         binding.gpSomethingWentWrong.visibility = GONE
         binding.gpEmpty.visibility = GONE
-        data?.map {
-            it.venue
-        }?.let {
+        data?.let {
             if (it.isEmpty())
                 nearbyPlacesAdapter.submitList(null).also {
                     binding.gpEmpty.visibility = VISIBLE

@@ -99,4 +99,8 @@ object Dependencies {
     val fragmentx = "androidx.fragment:fragment-ktx:${Versions.fragmentx}"
 
     val playServiceLocation = "com.google.android.gms:play-services-location:${Versions.playServiceLocation}"
+
+    val roomdatabase = "androidx.room:room-runtime:${Versions.roomdatabase}"
+
+    val roomdatabaseCompiler = "androidx.room:room-compiler:${Versions.roomdatabase}"
 }

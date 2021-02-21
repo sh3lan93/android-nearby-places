@@ -3,6 +3,7 @@ package com.shalan.nearby.nearby_places
 import com.shalan.nearby.base.states.BaseSingleListViewModel
 import com.shalan.nearby.enums.LocationUpdateType
 import com.shalan.nearby.network.response.GroupItem
+import com.shalan.nearby.network.response.Venue
 import io.reactivex.rxjava3.core.Single
 
 /**
@@ -10,7 +11,7 @@ import io.reactivex.rxjava3.core.Single
  */
 
 class NearbyPlacesListingViewModel(private val repo: NearbyPlacesListingRepo) :
-    BaseSingleListViewModel<List<GroupItem>>() {
+    BaseSingleListViewModel<List<Venue>>() {
 
 
     private lateinit var userLocation: String
@@ -28,7 +29,7 @@ class NearbyPlacesListingViewModel(private val repo: NearbyPlacesListingRepo) :
         loadData().execute(data)
     }
 
-    override fun loadData(): Single<List<GroupItem>> {
+    override fun loadData(): Single<List<Venue>> {
         if (!::userLocation.isInitialized)
             throw RuntimeException("user location should be initialized first")
 

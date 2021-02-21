@@ -132,4 +132,8 @@ dependencies {
 
     //play service location
     implementation Dependencies.playServiceLocation
+
+    //room database
+    implementation Dependencies.roomdatabase
+    kapt Dependencies.roomdatabaseCompiler
 }

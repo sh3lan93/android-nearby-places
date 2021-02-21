@@ -4,6 +4,8 @@
 
 object Versions {
 
+    val roomdatabase = "2.2.6"
+
     val playServiceLocation = "18.0.0"
 
     val fragmentx = "1.3.0"
