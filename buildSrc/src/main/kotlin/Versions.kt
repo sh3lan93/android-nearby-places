@@ -4,7 +4,7 @@
 
 object Versions {
 
-    val roomdatabase = "2.2.6"
+    val roomdatabase = "2.3.0-beta02"
 
     val playServiceLocation = "18.0.0"
 

@@ -92,15 +92,19 @@ object Dependencies {
 
     val multidex = "androidx.multidex:multidex:${Versions.multidex}"
 
-    val swipeRefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swipeRefreshLayout}"
+    val swipeRefreshLayout =
+        "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swipeRefreshLayout}"
 
     val activityx = "androidx.activity:activity-ktx:${Versions.activityx}"
 
     val fragmentx = "androidx.fragment:fragment-ktx:${Versions.fragmentx}"
 
-    val playServiceLocation = "com.google.android.gms:play-services-location:${Versions.playServiceLocation}"
+    val playServiceLocation =
+        "com.google.android.gms:play-services-location:${Versions.playServiceLocation}"
 
     val roomdatabase = "androidx.room:room-runtime:${Versions.roomdatabase}"
 
     val roomdatabaseCompiler = "androidx.room:room-compiler:${Versions.roomdatabase}"
+
+    val roomdatabaseRxJava3 = "androidx.room:room-rxjava3:${Versions.roomdatabase}"
 }

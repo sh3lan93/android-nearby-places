@@ -1,5 +1,7 @@
 package com.shalan.nearby.network.response
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.JsonClass
 
 /**
@@ -20,7 +22,8 @@ data class ResponseGroup(val type: String, val name: String, val items: List<Gro
 data class GroupItem(val venue: Venue)
 
 @JsonClass(generateAdapter = true)
-data class Venue(val id: String, val name: String, val location: ItemLocation? = null)
+@Entity
+data class Venue(@PrimaryKey val id: String, val name: String, val location: ItemLocation? = null)
 
 @JsonClass(generateAdapter = true)
 data class ItemLocation(

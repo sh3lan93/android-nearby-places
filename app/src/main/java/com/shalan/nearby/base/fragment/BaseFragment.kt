@@ -1,6 +1,10 @@
 package com.shalan.nearby.base.fragment
 
 import android.app.Activity
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.NetworkCapabilities.*
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -45,4 +49,25 @@ abstract class BaseFragment<ViewModel : BaseViewModel, Binding : ViewDataBinding
             this.hideSoftInputFromWindow(binding.root.windowToken, 0)
         }
     }
+
+    fun hasActiveNetwork() =
+        (requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).let {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                val networkCapabilities: NetworkCapabilities =
+                    it.getNetworkCapabilities(it.activeNetwork) ?: return@let false
+                when {
+                    networkCapabilities.hasTransport(TRANSPORT_WIFI) -> true
+                    networkCapabilities.hasTransport(TRANSPORT_CELLULAR) -> true
+                    networkCapabilities.hasTransport(TRANSPORT_ETHERNET) -> true
+                    else -> false
+                }
+            } else {
+                when (it.activeNetworkInfo?.type) {
+                    ConnectivityManager.TYPE_WIFI -> true
+                    ConnectivityManager.TYPE_MOBILE -> true
+                    ConnectivityManager.TYPE_ETHERNET -> true
+                    else -> false
+                }
+            }
+        }
 }

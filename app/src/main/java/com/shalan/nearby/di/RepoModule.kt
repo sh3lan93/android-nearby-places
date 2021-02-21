@@ -8,5 +8,5 @@ val repoModule = module {
 
     factory { MainRepo() }
 
-    factory { NearbyPlacesListingRepo(service = get()) }
+    factory { NearbyPlacesListingRepo(service = get(), venueDAO = get()) }
 }

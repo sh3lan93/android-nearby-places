@@ -2,7 +2,6 @@ package com.shalan.nearby.nearby_places
 
 import com.shalan.nearby.base.states.BaseSingleListViewModel
 import com.shalan.nearby.enums.LocationUpdateType
-import com.shalan.nearby.network.response.GroupItem
 import com.shalan.nearby.network.response.Venue
 import io.reactivex.rxjava3.core.Single
 
@@ -15,6 +14,8 @@ class NearbyPlacesListingViewModel(private val repo: NearbyPlacesListingRepo) :
 
 
     private lateinit var userLocation: String
+
+    var isNetworkAvailable: Boolean = false
 
     override fun startLogic() {
 
@@ -33,7 +34,10 @@ class NearbyPlacesListingViewModel(private val repo: NearbyPlacesListingRepo) :
         if (!::userLocation.isInitialized)
             throw RuntimeException("user location should be initialized first")
 
-        return repo.fetchRecommendation(userLocation = userLocation)
+        return repo.fetchRecommendation(
+            userLocation = userLocation,
+            isNetworkAvailable = isNetworkAvailable
+        )
     }
 
     fun isRealtimeUpdates() = repo.whichLocationType() == LocationUpdateType.REALTIME

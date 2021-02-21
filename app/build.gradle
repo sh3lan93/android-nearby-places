@@ -136,4 +136,5 @@ dependencies {
     //room database
     implementation Dependencies.roomdatabase
     kapt Dependencies.roomdatabaseCompiler
+    implementation Dependencies.roomdatabaseRxJava3
 }

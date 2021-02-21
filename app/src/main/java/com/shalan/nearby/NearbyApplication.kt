@@ -28,7 +28,8 @@ class NearbyApplication : MultiDexApplication() {
                 serializationModule,
                 otherServices,
                 repoModule,
-                networkServiceModule
+                networkServiceModule,
+                databaseModule
             )
         }
     }

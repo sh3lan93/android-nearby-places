@@ -115,6 +115,7 @@ class NearbyPlacesListingFragment :
                 }
             }
         }
+        viewmodel.isNetworkAvailable = hasActiveNetwork()
 
         observeData()
         getRecyclerView().adapter = getAdapter()
