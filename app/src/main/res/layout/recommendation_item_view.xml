@@ -7,9 +7,23 @@
 
         <import type="com.shalan.nearby.network.response.Venue" />
 
+        <import type="com.shalan.nearby.base.services.ImageLoadingService" />
+
+        <import type="com.shalan.nearby.network.services.NearbyService" />
+
+
         <variable
             name="venue"
             type="Venue" />
+
+        <variable
+            name="nearbyService"
+            type="NearbyService" />
+
+        <variable
+            name="imageLoadingService"
+            type="ImageLoadingService" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,6 +33,10 @@
 
         <ImageView
             android:id="@+id/iv_place_image"
+            imageLoading="@{imageLoadingService}"
+            placeholder="@{@drawable/ic_placeholder}"
+            service="@{nearbyService}"
+            venueId="@{venue.id}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_10dp"
             android:text="@{venue.name}"
+            android:textAlignment="viewStart"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/black"
             android:textStyle="bold"

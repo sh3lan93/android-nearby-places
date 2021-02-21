@@ -13,7 +13,11 @@ import java.io.File
 
 class ImageLoadingServiceImp : ImageLoadingService {
 
-    override fun loadCenterCropImageWithPlaceholder(
+	override fun loadDrawable(context: Context, drawable: Drawable, view: ImageView) {
+		Glide.with(context).load(drawable).into(view)
+	}
+
+	override fun loadCenterCropImageWithPlaceholder(
 		context: Context,
 		imageUrl: String,
 		placeholder: Drawable,

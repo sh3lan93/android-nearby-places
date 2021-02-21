@@ -11,7 +11,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
@@ -41,8 +40,67 @@ class NearbyPlacesListingFragment :
     private lateinit var locationPermissionRequestLauncher: ActivityResultLauncher<String>
     private lateinit var locationRequest: LocationRequest
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private val locationUpdatesCallback by lazy {
-        object : LocationCallback() {
+    private var locationUpdatesCallback: LocationCallback? = null
+
+    private val nearbyPlacesAdapter by lazy {
+        NearbyPlacesAdapter()
+    }
+
+    override fun getRecyclerView(): RecyclerView = binding.rvRecommendation
+
+    override fun getSwipeRefresh(): SwipeRefreshLayout? = null
+
+    override fun showLoading() {
+        binding.loader.visibility = VISIBLE
+        binding.rvRecommendation.visibility = GONE
+        binding.gpSomethingWentWrong.visibility = GONE
+        binding.gpEmpty.visibility = GONE
+    }
+
+    override fun showError(error: String?) {
+        Log.e(TAG, "showError: $error")
+        binding.gpSomethingWentWrong.visibility = VISIBLE
+        binding.gpEmpty.visibility = GONE
+        binding.rvRecommendation.visibility = GONE
+        binding.loader.visibility = GONE
+    }
+
+    override fun hideLoading() {
+        binding.loader.visibility = GONE
+        binding.rvRecommendation.visibility = VISIBLE
+    }
+
+    override fun showData(data: List<GroupItem>?) {
+        binding.gpSomethingWentWrong.visibility = GONE
+        binding.gpEmpty.visibility = GONE
+        data?.map {
+            it.venue
+        }?.let {
+            if (it.isEmpty())
+                nearbyPlacesAdapter.submitList(null).also {
+                    binding.gpEmpty.visibility = VISIBLE
+                }
+            else
+                nearbyPlacesAdapter.submitList(it)
+        }
+    }
+
+    override fun getAdapter(): NearbyPlacesAdapter = nearbyPlacesAdapter
+
+    override fun onResume() {
+        super.onResume()
+        checkLocationPermission()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        fusedLocationClient.removeLocationUpdates(locationUpdatesCallback!!)
+    }
+
+    override fun onCreateInit(savedInstanceState: Bundle?) {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        locationUpdatesCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
                 if (viewmodel.isFirstTimeToGetLocation() || LocationUtils.shouldFetchRecommendations(
                         first = Location(USER_LOCATION_PROVIDER).apply {
@@ -59,53 +117,7 @@ class NearbyPlacesListingFragment :
                 }
             }
         }
-    }
 
-    private val nearbyPlacesAdapter by lazy {
-        NearbyPlacesAdapter()
-    }
-
-    override fun getRecyclerView(): RecyclerView = binding.rvRecommendation
-
-    override fun getSwipeRefresh(): SwipeRefreshLayout? = null
-
-    override fun showLoading() {
-        binding.loader.visibility = VISIBLE
-        binding.rvRecommendation.visibility = GONE
-    }
-
-    override fun showError(error: String?) {
-        Toast.makeText(requireContext(), "$error", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun hideLoading() {
-        binding.loader.visibility = GONE
-        binding.rvRecommendation.visibility = VISIBLE
-    }
-
-    override fun showData(data: List<GroupItem>?) {
-        Log.d(TAG, "showData: $data")
-        data?.map {
-            it.venue
-        }?.let {
-            nearbyPlacesAdapter.submitList(it)
-        }
-    }
-
-    override fun getAdapter(): NearbyPlacesAdapter = nearbyPlacesAdapter
-
-    override fun onResume() {
-        super.onResume()
-        checkLocationPermission()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        fusedLocationClient.removeLocationUpdates(locationUpdatesCallback)
-    }
-
-    override fun onCreateInit(savedInstanceState: Bundle?) {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         observeData()
         getRecyclerView().adapter = getAdapter()
         getRecyclerView().addItemDecoration(
@@ -221,7 +233,7 @@ class NearbyPlacesListingFragment :
     private fun getUserLocation() {
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
-            locationUpdatesCallback,
+            locationUpdatesCallback!!,
             Looper.getMainLooper()
         )
     }
@@ -240,6 +252,11 @@ class NearbyPlacesListingFragment :
             else
                 getUserLocation()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        locationUpdatesCallback = null
     }
 
     companion object {

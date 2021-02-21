@@ -23,7 +23,11 @@ data class GroupItem(val venue: Venue)
 data class Venue(val id: String, val name: String, val location: ItemLocation? = null)
 
 @JsonClass(generateAdapter = true)
-data class ItemLocation(val address: String? = null, val city: String, val state: String) {
+data class ItemLocation(
+    val address: String? = null,
+    val city: String? = null,
+    val state: String? = null
+) {
 
     fun getDisplayedAddress() = "$address, $city, $state"
 

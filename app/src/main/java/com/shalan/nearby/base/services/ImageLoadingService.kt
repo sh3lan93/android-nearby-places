@@ -7,6 +7,8 @@ import android.widget.ImageView
 
 interface ImageLoadingService {
 
+    fun loadDrawable(context: Context, drawable: Drawable, view: ImageView)
+
     fun loadCenterCropImageWithPlaceholder(
 		context: Context,
 		imageUrl: String,
