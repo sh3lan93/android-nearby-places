@@ -1,8 +1,8 @@
 package com.shalan.nearby.utils
 
-import android.app.AlertDialog
 import android.content.Context
 import androidx.annotation.StringRes
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.shalan.nearby.R
 
 /**
@@ -17,7 +17,7 @@ object DialogsUtils {
         crossinline positiveAction: () -> Unit,
         crossinline negativeAction: () -> Unit
     ) {
-        AlertDialog.Builder(context).apply {
+        MaterialAlertDialogBuilder(context).apply {
             setMessage(message)
             setCancelable(false)
             setPositiveButton(context.getString(R.string.ok), { dialogInterface, which ->
