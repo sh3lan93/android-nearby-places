@@ -3,6 +3,7 @@ package com.shalan.nearby.nearby_places
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender.SendIntentException
 import android.location.Location
@@ -125,6 +126,10 @@ class NearbyPlacesListingFragment :
                 DividerItemDecoration.VERTICAL
             )
         )
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         locationPermissionRequestLauncher =
             requireActivity().registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 if (isGranted) {
