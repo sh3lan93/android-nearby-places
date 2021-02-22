@@ -2,6 +2,7 @@ package com.shalan.nearby.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
@@ -11,6 +12,7 @@ import com.shalan.nearby.R
 import com.shalan.nearby.base.activity.BaseActivity
 import com.shalan.nearby.databinding.ActivityMainBinding
 import com.shalan.nearby.enums.LocationUpdateType
+import com.shalan.nearby.nearby_places.NearbyPlacesListingFragment
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(MainViewModel::class) {
 
@@ -59,7 +61,9 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(MainViewMo
             viewmodel.updateLocationType(LocationUpdateType.REALTIME.type)
         }
         invalidateOptionsMenu()
-
+        if (navController.currentDestination?.id == R.id.nearbyPlacesListingFragment){
+            (supportFragmentManager.fragments.find { it is NavHostFragment }?.childFragmentManager?.fragments?.first() as NearbyPlacesListingFragment?)?.changeMode()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

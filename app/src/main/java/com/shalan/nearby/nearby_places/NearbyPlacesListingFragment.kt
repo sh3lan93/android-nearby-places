@@ -162,6 +162,10 @@ class NearbyPlacesListingFragment :
 
     @SuppressLint("MissingPermission")
     private fun handleSingleTimeType() {
+        if (locationUpdatesCallback != null){
+            fusedLocationClient.removeLocationUpdates(locationUpdatesCallback!!)
+            locationUpdatesCallback = null
+        }
         initLocationRequest()
         checkLocationSettings {
             fusedLocationClient.lastLocation.addOnSuccessListener {
@@ -294,6 +298,10 @@ class NearbyPlacesListingFragment :
             else
                 getUserLocation()
         }
+    }
+
+    fun changeMode(){
+        fetchUserLocation()
     }
 
     override fun onDestroy() {
