@@ -93,29 +93,13 @@ class NearbyPlacesListingFragment :
 
     override fun onStop() {
         super.onStop()
-        fusedLocationClient.removeLocationUpdates(locationUpdatesCallback!!)
+        locationUpdatesCallback?.let {
+            fusedLocationClient.removeLocationUpdates(it)
+        }
     }
 
     override fun onCreateInit(savedInstanceState: Bundle?) {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
-        locationUpdatesCallback = object : LocationCallback() {
-            override fun onLocationResult(p0: LocationResult) {
-                if (viewmodel.isFirstTimeToGetLocation() || LocationUtils.shouldFetchRecommendations(
-                        first = Location(USER_LOCATION_PROVIDER).apply {
-                            latitude = viewmodel.getUserLocation().first()
-                            longitude = viewmodel.getUserLocation().last()
-                        },
-                        second = p0.lastLocation
-                    )
-                ) {
-                    viewmodel.setUserLocation(
-                        latitude = p0.lastLocation.latitude,
-                        longitude = p0.lastLocation.longitude
-                    )
-                }
-            }
-        }
         viewmodel.isNetworkAvailable = hasActiveNetwork()
 
         observeData()
@@ -141,6 +125,7 @@ class NearbyPlacesListingFragment :
     }
 
     private fun showLocationDeniedMessage() {
+        findNavController().popBackStack()
         findNavController().navigate(
             MainNavXmlDirections.actionGlobalInformaticFragment(
                 getString(R.string.location_denied_message)
@@ -170,7 +155,25 @@ class NearbyPlacesListingFragment :
         if (checkIsGoogleServiceAvailable())
             if (viewmodel.isRealtimeUpdates()) {
                 handleRealtimeType()
+            } else {
+                handleSingleTimeType()
             }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun handleSingleTimeType() {
+        initLocationRequest()
+        checkLocationSettings {
+            fusedLocationClient.lastLocation.addOnSuccessListener {
+                it?.let { noNullableLocation ->
+                    Log.d(TAG, "handleSingleTimeType: ${noNullableLocation.latitude}, ${noNullableLocation.longitude}")
+                    viewmodel.setUserLocation(
+                        latitude = noNullableLocation.latitude,
+                        longitude = noNullableLocation.longitude
+                    )
+                }
+            }
+        }
     }
 
     private fun checkIsGoogleServiceAvailable(): Boolean =
@@ -183,6 +186,7 @@ class NearbyPlacesListingFragment :
                             status,
                             GOOGLE_SERVICE_AVAILABILITY_REQUEST_CODE, {
                                 it.dismiss()
+                                findNavController().popBackStack()
                                 findNavController().navigate(
                                     MainNavXmlDirections.actionGlobalInformaticFragment(
                                         message = getString(R.string.google_service_not_available)
@@ -196,12 +200,34 @@ class NearbyPlacesListingFragment :
             }
 
     private fun handleRealtimeType() {
-        locationRequest = LocationRequest.create().apply {
-            interval = 15000
-            fastestInterval = 10000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        initLocationRequest()
+        checkLocationSettings {
+            locationUpdatesCallback = object : LocationCallback() {
+                override fun onLocationResult(p0: LocationResult) {
+                    Log.d(
+                        TAG,
+                        "onLocationResult: new location ${p0.lastLocation.latitude}, ${p0.lastLocation.longitude}"
+                    )
+                    if (viewmodel.isFirstTimeToGetLocation() || LocationUtils.shouldFetchRecommendations(
+                            first = Location(USER_LOCATION_PROVIDER).apply {
+                                latitude = viewmodel.getUserLocation().first()
+                                longitude = viewmodel.getUserLocation().last()
+                            },
+                            second = p0.lastLocation
+                        )
+                    ) {
+                        viewmodel.setUserLocation(
+                            latitude = p0.lastLocation.latitude,
+                            longitude = p0.lastLocation.longitude
+                        )
+                    }
+                }
+            }
+            getUserLocation()
         }
+    }
 
+    private inline fun checkLocationSettings(crossinline actionToDo: () -> Unit) {
         LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
             .also { locationSettingBuilder ->
                 val settingClient = LocationServices.getSettingsClient(requireActivity())
@@ -209,7 +235,7 @@ class NearbyPlacesListingFragment :
                     settingClient.checkLocationSettings(locationSettingBuilder.build())
 
                 locationSettingResponse.addOnSuccessListener { settingsResponse ->
-                    getUserLocation()
+                    actionToDo.invoke()
                 }
 
                 locationSettingResponse.addOnFailureListener { settingsException ->
@@ -223,6 +249,7 @@ class NearbyPlacesListingFragment :
                             Log.e(TAG, "handleRealtimeType: ${intentException.message}")
                         }
                     } else {
+                        findNavController().popBackStack()
                         findNavController().navigate(
                             MainNavXmlDirections.actionGlobalInformaticFragment(
                                 message = getString(R.string.something_went_wrong)
@@ -230,6 +257,15 @@ class NearbyPlacesListingFragment :
                         )
                     }
                 }
+            }
+    }
+
+    private fun initLocationRequest() {
+        if (!::locationRequest.isInitialized)
+            locationRequest = LocationRequest.create().apply {
+                interval = 15000
+                fastestInterval = 10000
+                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             }
     }
 
@@ -246,13 +282,15 @@ class NearbyPlacesListingFragment :
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CHECK_LOCATION_SETTINGS_REQUEST_CODE) {
             if (resultCode != RESULT_OK)
-                findNavController().navigate(
-                    MainNavXmlDirections.actionGlobalInformaticFragment(
-                        getString(
-                            R.string.location_not_enabled_message
+                findNavController().popBackStack().also {
+                    findNavController().navigate(
+                        MainNavXmlDirections.actionGlobalInformaticFragment(
+                            getString(
+                                R.string.location_not_enabled_message
+                            )
                         )
                     )
-                )
+                }
             else
                 getUserLocation()
         }

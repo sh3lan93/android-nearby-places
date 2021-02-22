@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View.GONE
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import com.shalan.nearby.R
 import com.shalan.nearby.base.activity.BaseActivity
 import com.shalan.nearby.databinding.ActivityMainBinding
@@ -11,11 +14,19 @@ import com.shalan.nearby.enums.LocationUpdateType
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(MainViewModel::class) {
 
+    private lateinit var navController: NavController
+
     override val layoutId: Int
         get() = R.layout.activity_main
 
     override fun onCreateInit(savedInstance: Bundle?) {
         setSupportActionBar(binding.toolbar)
+        navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            when(destination.id){
+                R.id.informaticFragment -> binding.toolbar.visibility = GONE
+            }
+        }
     }
 
 
@@ -48,6 +59,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(MainViewMo
             viewmodel.updateLocationType(LocationUpdateType.REALTIME.type)
         }
         invalidateOptionsMenu()
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
