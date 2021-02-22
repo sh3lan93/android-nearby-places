@@ -26,24 +26,25 @@ fun bindImage(
     imageLoading: ImageLoadingService,
     service: NearbyService
 ) {
-    //I HAVE TO ADD A TIMER FOR API RESTRICTION AND QUOTA LIMIT
-    Single.timer(5, TimeUnit.SECONDS)
-        .flatMap {
-            service.getVenuePhotos(venueId = venueId)
-        }.compose(IoTransformers())
-        .map {
-            it.response.photos.items.firstOrNull()?.getFullPhotoUrl() ?: ""
-        }
-        .subscribe({ fullImageUrl ->
-            imageLoading.loadImageWithPlaceholder(
-                view.context,
-                fullImageUrl,
-                placeholder,
-                view
-            )
-        }, {
-            Log.e("BindImage", "bindImage: ", it)
-            if (view.drawable == null)
-                imageLoading.loadDrawable(view.context, placeholder, view)
-        })
+    if (view.drawable == null)
+        //I HAVE TO ADD A TIMER FOR API RESTRICTION AND QUOTA LIMIT
+        Single.timer(5, TimeUnit.SECONDS)
+            .flatMap {
+                service.getVenuePhotos(venueId = venueId)
+            }.compose(IoTransformers())
+            .map {
+                it.response.photos.items.firstOrNull()?.getFullPhotoUrl() ?: ""
+            }
+            .subscribe({ fullImageUrl ->
+                imageLoading.loadImageWithPlaceholder(
+                    view.context,
+                    fullImageUrl,
+                    placeholder,
+                    view
+                )
+            }, {
+                Log.e("BindImage", "bindImage: ", it)
+                if (view.drawable == null)
+                    imageLoading.loadDrawable(view.context, placeholder, view)
+            })
 }
