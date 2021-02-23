@@ -2,7 +2,6 @@ package com.shalan.nearby.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
@@ -14,18 +13,22 @@ import com.shalan.nearby.databinding.ActivityMainBinding
 import com.shalan.nearby.enums.LocationUpdateType
 import com.shalan.nearby.nearby_places.NearbyPlacesListingFragment
 
-class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(MainViewModel::class) {
+class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(MainViewModel::class),
+    NearbyPlacesListingFragment.NearbyPlacesListingContract {
 
     private lateinit var navController: NavController
+
+    private var shouldEnableMenuItems = false
 
     override val layoutId: Int
         get() = R.layout.activity_main
 
     override fun onCreateInit(savedInstance: Bundle?) {
         setSupportActionBar(binding.toolbar)
-        navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+        navController =
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            when(destination.id){
+            when (destination.id) {
                 R.id.informaticFragment -> binding.toolbar.visibility = GONE
             }
         }
@@ -39,6 +42,8 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(MainViewMo
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.findItem(R.id.location_update_type)?.let {
+            it.isEnabled = shouldEnableMenuItems
+
             if (viewmodel.getLocationUpdateType() == LocationUpdateType.REALTIME)
                 it.title = getString(R.string.single_txt)
             else
@@ -61,7 +66,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(MainViewMo
             viewmodel.updateLocationType(LocationUpdateType.REALTIME.type)
         }
         invalidateOptionsMenu()
-        if (navController.currentDestination?.id == R.id.nearbyPlacesListingFragment){
+        if (navController.currentDestination?.id == R.id.nearbyPlacesListingFragment) {
             (supportFragmentManager.fragments.find { it is NavHostFragment }?.childFragmentManager?.fragments?.first() as NearbyPlacesListingFragment?)?.changeMode()
         }
     }
@@ -71,5 +76,10 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(MainViewMo
         for (fragment in supportFragmentManager.findFragmentById(R.id.nav_host_fragment)?.childFragmentManager?.fragments
             ?: emptyList())
             fragment.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun isDataLoaded(value: Boolean) {
+        shouldEnableMenuItems = value
+        invalidateOptionsMenu()
     }
 }

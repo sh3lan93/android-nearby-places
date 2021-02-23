@@ -2,6 +2,7 @@ package com.shalan.nearby.nearby_places
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
@@ -26,6 +27,7 @@ import com.shalan.nearby.MainNavXmlDirections
 import com.shalan.nearby.R
 import com.shalan.nearby.base.fragment.BaseSingleListFragment
 import com.shalan.nearby.databinding.FragmentNearbyPlacesListingBinding
+import com.shalan.nearby.main.MainActivity
 import com.shalan.nearby.network.response.Venue
 import com.shalan.nearby.utils.DialogsUtils
 import com.shalan.nearby.utils.LocationManager
@@ -37,6 +39,7 @@ class NearbyPlacesListingFragment :
         clazz = NearbyPlacesListingViewModel::class
     ) {
 
+    private var contract: NearbyPlacesListingContract? = null
 
     private lateinit var locationPermissionRequestLauncher: ActivityResultLauncher<String>
     private lateinit var locationRequest: LocationRequest
@@ -56,6 +59,7 @@ class NearbyPlacesListingFragment :
         binding.rvRecommendation.visibility = GONE
         binding.gpSomethingWentWrong.visibility = GONE
         binding.gpEmpty.visibility = GONE
+        contract?.isDataLoaded(false)
     }
 
     override fun showError(error: String?) {
@@ -69,6 +73,7 @@ class NearbyPlacesListingFragment :
     override fun hideLoading() {
         binding.loader.visibility = GONE
         binding.rvRecommendation.visibility = VISIBLE
+        contract?.isDataLoaded(true)
     }
 
     override fun showData(data: List<Venue>?) {
@@ -122,6 +127,9 @@ class NearbyPlacesListingFragment :
                     showLocationDeniedMessage()
                 }
             }
+
+        if (context is MainActivity)
+            contract = context
     }
 
     private fun showLocationDeniedMessage() {
@@ -314,5 +322,10 @@ class NearbyPlacesListingFragment :
         val GOOGLE_SERVICE_AVAILABILITY_REQUEST_CODE = 1
         val CHECK_LOCATION_SETTINGS_REQUEST_CODE = 2
         val USER_LOCATION_PROVIDER = "userlocation"
+    }
+
+    interface NearbyPlacesListingContract{
+        //USED TO DISABLE CHANGE MODE BUTTON UNTIL THE DATA IS LOADED
+        fun isDataLoaded(value: Boolean)
     }
 }
