@@ -19,6 +19,7 @@ class NearbyPlacesViewHolder(private val binding: RecommendationItemViewBinding)
     private val nearbyService by inject<NearbyService>()
 
     override fun bind(item: Venue) {
+        binding.ivPlaceImage.setImageResource(0)
         binding.venue = item
         binding.nearbyService = nearbyService
         binding.imageLoadingService = imageLoadingService
